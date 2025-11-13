@@ -1,6 +1,5 @@
 import sqlite3
 
-# 🔹 Inicializa o banco de dados e cria a tabela de animais
 def init_db():
     conn = sqlite3.connect("zoologico.db")
     cursor = conn.cursor()
@@ -17,8 +16,6 @@ def init_db():
     conn.commit()
     conn.close()
 
-
-# 🔹 Adiciona um novo animal
 def add_data(nome: str, especie: str, idade: int, peso: float, habitat: str):
     conn = sqlite3.connect("zoologico.db")
     cursor = conn.cursor()
@@ -29,8 +26,24 @@ def add_data(nome: str, especie: str, idade: int, peso: float, habitat: str):
     conn.commit()
     conn.close()
 
+def delete_data(parametro: str):
+    conn = sqlite3.connect("zoologico.db")
+    cursor = conn.cursor()
+    if parametro.isdigit():
+        cursor.execute("DELETE FROM animais WHERE id = ?", (parametro,))
+    else:
+        cursor.execute("DELETE FROM animais WHERE nome LIKE ?", (f"%{parametro}%",))
+    conn.commit()
+    conn.close()
 
-# 🔹 Executa uma query SQL (SELECT, UPDATE, DELETE etc)
+def update_data(id_animal: int, campo: str, novo_valor):
+    conn = sqlite3.connect("zoologico.db")
+    cursor = conn.cursor()
+    query = f"UPDATE animais SET {campo} = ? WHERE id = ?"
+    cursor.execute(query, (novo_valor, id_animal))
+    conn.commit()
+    conn.close()
+
 def run_query(sql_query: str):
     conn = sqlite3.connect("zoologico.db")
     cursor = conn.cursor()
@@ -41,14 +54,3 @@ def run_query(sql_query: str):
         resultados = [f"Erro ao executar SQL: {e}"]
     conn.close()
     return resultados
-
-if __name__ == "__main__":
-    init_db()
-
-    add_data("Leão", "Panthera leo", 8, 190.5, "Savana")
-    add_data("Girafa", "Giraffa camelopardalis", 12, 800.0, "Savana")
-    add_data("Pinguim", "Aptenodytes forsteri", 5, 30.2, "Antártica")
-
-    animais = run_query("SELECT * FROM animais")
-    for a in animais:
-        print(a)
