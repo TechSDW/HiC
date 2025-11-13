@@ -18,39 +18,42 @@ def text2sql(question: str):
     - Responda SOMENTE com a query SQL válida.
     - NÃO adicione ```sql ou qualquer markdown.
     - NÃO explique, apenas forneça a query.
-    - Use apenas a tabela 'people' com as colunas: id, name, age, city.
-    
+    - Use apenas a tabela 'animais' com as colunas:
+      id, nome, especie, idade, peso, habitat.
+
     Pergunta: {question}
     """
     sql_query = ollama_generate(prompt)
     print(f"[SQL Gerado] {sql_query}")
-    results = run_query(sql_query)
-    return sql_query, results
+    resultados = run_query(sql_query)
+    return sql_query, resultados
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Olá! Sou um bot que transforma texto em SQL.\n"
+        "Olá! Sou um bot do zoológico que transforma texto em SQL.\n"
         "Envie uma pergunta, por exemplo:\n\n"
-        "→ Quem mora em São Paulo?"
+        "→ Quais animais vivem na Savana?\n"
+        "→ Mostre o nome e o peso dos pinguins."
     )
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     question = update.message.text
-    await update.message.reply_text("Gerando SQL... (pode demorar um pouco)")
+    await update.message.reply_text("Gerando SQL...")
 
-    sql_query, results = text2sql(question)
-    response = f"SQL gerado:\n{sql_query}\n\nResultado:\n{results}"
-    await update.message.reply_text(response)
+    sql_query, resultados = text2sql(question)
+
+    resposta = f"SQL gerado:\n{sql_query}\n\nResultado:\n{resultados}"
+    await update.message.reply_text(resposta)
 
 if __name__ == "__main__":
     import os
 
-    # seu token do BotFather aqui
-    TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN") or "token"
+    TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN") or "8319592448:AAGn1GKXBxilj2zKYe0DNtDb1zd_g9bDurg"
 
     init_db()
-    add_data("Alice", 25, "São Paulo")
-    add_data("Bruno", 30, "Rio de Janeiro")
+    add_data("Leão", "Panthera leo", 8, 190.5, "Savana")
+    add_data("Girafa", "Giraffa camelopardalis", 12, 800.0, "Savana")
+    add_data("Pinguim", "Aptenodytes forsteri", 5, 30.2, "Antártica")
 
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
