@@ -100,7 +100,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(resposta)
 
 if __name__ == "__main__":
-    TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN") or "8319592448:AAGn1GKXBxilj2zKYe0DNtDb1zd_g9bDurg"
+    TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN") or "COLOQUE_SEU_TOKEN_AQUI"
 
     init_db()
 
